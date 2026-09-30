@@ -243,7 +243,7 @@ button,input,select{font:inherit} button{color:inherit}
             <div class="meter"><div class="m-head"><span>CREW MORALE</span><span id="moraleText">0%</span></div><div class="bar pink"><span id="moraleBar"></span></div></div>
             <div class="meter"><div class="m-head"><span>CAMPAIGN</span><span id="campaignText">0%</span></div><div class="bar"><span id="campaignBar"></span></div></div>
           </div>
-          <div class="objective"><b>PRIMARY OBJECTIVE</b><br>Reach <b>Legend status</b>: 100 reputation and ¥75,000 liquid credits. High heat attracts law enforcement; retaliation pressure attracts hostile crews and corporate response teams.</div>
+          <div class="objective"><b>PRIMARY OBJECTIVE</b><br>Reach <b>Legend status</b>: 100 reputation and ¥100,000 liquid credits. High heat attracts law enforcement; retaliation pressure attracts hostile crews and corporate response teams.</div>
           <div style="display:flex;gap:6px;margin-top:8px"><button class="btn" style="flex:1" onclick="advanceTime(4,true)">PASS 4 HOURS</button><button class="btn" style="flex:1" onclick="advanceTime(12,true)">LAY LOW 12H</button></div>
         </div>
       </div>
@@ -426,7 +426,7 @@ function renderSafehouse(el){
 }
 function renderLog(){const el=document.getElementById('log');el.innerHTML=(state.logs||[]).slice().reverse().map(l=>`<div class="log-entry ${l.kind}"><span class="time">[D${String(l.day).padStart(2,'0')} ${String(l.hour).padStart(2,'0')}:00]</span> ${l.text}</div>`).join('')||'<div class="empty">NO COMMS TRAFFIC</div>'}
 function renderStatus(){
- const m=morale(),campaign=Math.min(100,Math.round((Math.min(state.reputation,100)/100*.65+Math.min(state.credits,75000)/75000*.35)*100));
+ const m=morale(),campaign=Math.min(100,Math.round((Math.min(state.reputation,100)/100*.65+Math.min(state.credits,100000)/100000*.35)*100));
  document.getElementById('safehouseText').textContent=state.safehouse+'/4';document.getElementById('safehouseBar').style.width=(state.safehouse/4*100)+'%';
  document.getElementById('securityText').textContent=state.security+'/4';document.getElementById('securityBar').style.width=(state.security/4*100)+'%';
  document.getElementById('heatText').textContent=state.heat+'%';document.getElementById('heatBar').style.width=state.heat+'%';document.getElementById('threatText').textContent=state.threat+'%';document.getElementById('threatBar').style.width=state.threat+'%';document.getElementById('moraleText').textContent=m+'%';document.getElementById('moraleBar').style.width=m+'%';
@@ -617,7 +617,7 @@ function resolveCrisis(choice){
 function expireContracts(){const expired=state.contracts.filter(c=>c.expires<state.day);if(expired.length)log(`${expired.length} contract${expired.length>1?'s':''} expired from the feed.`,'system');state.contracts=state.contracts.filter(c=>c.expires>=state.day)}
 
 function checkEnd(){
- if(state.reputation>=100&&state.credits>=75000){endGame(true);return}
+ if(state.reputation>=100&&state.credits>=100000){endGame(true);return}
  if(state.credits<-5000||state.crew.every(c=>c.health<=0)){endGame(false)}
 }
 function endGame(win){const el=document.getElementById('gameOver');el.classList.add('show');document.getElementById('endTitle').textContent=win?'LEGEND STATUS ACHIEVED':'CELL COLLAPSED';document.getElementById('endText').textContent=win?`After ${state.day} days and ${state.missionsDone} contracts, your crew controls enough money, reputation and leverage to become a permanent power in the city.`:`Your operation can no longer function. Final record: ${state.missionsDone} contracts, ${state.wins} clean successes and ${state.credits<0?'an unsustainable debt load':'no operatives fit for duty'}.`;}

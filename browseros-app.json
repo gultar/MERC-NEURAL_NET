@@ -1,0 +1,10 @@
+{
+  "id": "neural",
+  "name": "NEURAL_NET-MERC_OS",
+  "version": "1.0.0",
+  "description": "A dark cyberpunk mercenary-management strategy game where you recruit and equip a crew, take dangerous contracts, manage money, heat and retaliation, and build your operation into a legendary criminal outfit without getting wiped out.",
+  "entry": "index.html",
+  "icon": "icon.svg",
+  "width": 900,
+  "height": 650
+}
