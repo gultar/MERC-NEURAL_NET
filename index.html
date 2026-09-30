@@ -522,10 +522,10 @@ function launchMission(){
  const c=state.contracts.find(x=>x.id===modalContext.contractId);if(!c||!modalContext.selected.length)return;const ids=[...modalContext.selected],useIntel=modalContext.intel;if(useIntel)state.intel=Math.max(0,state.intel-1);
  const preview=missionPreview(c,ids,useIntel),roll=rand(1,100);let outcome=roll<=preview.odds?'success':roll<=Math.min(98,preview.odds+18)?'partial':'fail';
  const crew=ids.map(id=>state.crew.find(x=>x.id===id));let pay=0,rep=0,heatGain=0,threatGain=0,injuryBase=0;
- if(outcome==='success'){pay=c.reward;rep=2+c.risk*2;heatGain=1+c.risk*2;threatGain=3+c.risk*2;injuryBase=c.risk*2;state.wins++;}
- else if(outcome==='partial'){pay=Math.round(c.reward*.45);rep=Math.max(0,c.risk-1);heatGain=4+c.risk*3;threatGain=2+c.risk*2;injuryBase=5+c.risk*3;}
- else{pay=0;rep=-Math.max(1,c.risk-2);heatGain=8+c.risk*4;threatGain=1+c.risk;injuryBase=10+c.risk*4;state.losses++;}
- const injuries=[];crew.forEach(m=>{const b=bonuses(m);let dmg=Math.max(0,injuryBase+rand(-4,8)-(b.armor||0)*2-(b.med||0));if(outcome==='success'&&Math.random()<.45)dmg=Math.floor(dmg*.4);m.health=clamp(m.health-dmg,0,100);m.stress=clamp(m.stress+5+c.risk*3+(outcome==='fail'?8:0),0,100);const gain=8+c.risk*5;m.xp+=gain;levelUp(m);injuries.push({name:m.name,dmg,health:m.health,xp:gain})});
+ if(outcome==='success'){pay=c.reward;rep=2+c.risk*2;heatGain=1+c.risk*2;threatGain=3+c.risk*2;injuryBase=3+c.risk*3;state.wins++;}
+ else if(outcome==='partial'){pay=Math.round(c.reward*.45);rep=Math.max(0,c.risk-1);heatGain=4+c.risk*3;threatGain=2+c.risk*2;injuryBase=9+c.risk*4;}
+ else{pay=0;rep=-Math.max(1,c.risk-2);heatGain=8+c.risk*4;threatGain=1+c.risk;injuryBase=16+c.risk*5;state.losses++;}
+ const injuries=[];crew.forEach(m=>{const b=bonuses(m);let dmg=Math.max(0,injuryBase+rand(-3,10)-(b.armor||0)*2-(b.med||0));if(outcome==='success'&&Math.random()<.25)dmg=Math.floor(dmg*.35);if(outcome==='partial'&&Math.random()<.20)dmg=Math.round(dmg*1.25);if(outcome==='fail'&&Math.random()<.30)dmg=Math.round(dmg*1.35);m.health=clamp(m.health-dmg,0,100);m.stress=clamp(m.stress+7+c.risk*4+(outcome==='partial'?5:0)+(outcome==='fail'?12:0),0,100);const gain=8+c.risk*5;m.xp+=gain;levelUp(m);injuries.push({name:m.name,dmg,health:m.health,xp:gain})});
  state.credits+=pay;state.reputation=clamp(state.reputation+rep,0,120);state.heat=clamp(state.heat+heatGain,0,100);state.threat=clamp(state.threat+threatGain,0,100);state.missionsDone++;state.contracts=state.contracts.filter(x=>x.id!==c.id);
  log(`${c.title}: ${outcome.toUpperCase()}. ${pay?money(pay)+' received.':'No payout.'}` ,outcome==='success'?'good':outcome==='partial'?'warn':'bad');
  advanceTime(c.duration,false,true);refreshContracts();autosave();showMissionResult(c,outcome,pay,rep,heatGain,threatGain,roll,preview.odds,injuries);
